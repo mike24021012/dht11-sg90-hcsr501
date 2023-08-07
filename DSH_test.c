@@ -25,7 +25,7 @@ pthread_t dht11_thread_t,sg90_thread_t,hcsr501_thread_t;
 //global variables used between threads communication
 //dht11
 int dht11_state=2;               //state_value   0:thread was used before, now close 
-								 //				 1:thread is continuing 
+								 //			 1:thread is continuing 
 								 // 			 2:thread never been used 
 //sg90
 int sg90_state=2,sg90_rotate_direction=0,sg90_speed;
