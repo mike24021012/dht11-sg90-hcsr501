@@ -45,12 +45,12 @@ static long sg90_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 				udelay(100);
 		
 			if( gpio_direction_output(PIN,0) < 0 )
-    		{
-    			printk("set gpio output value 0 fail.\n");
+    			{
+    				printk("set gpio output value 0 fail.\n");
 				return -1;
-    		}
-       		for(j=0;j<(200-arg);++j)
-        		udelay(100);     
+    			}
+       			for(j=0;j<(200-arg);++j)
+        			udelay(100);     
 		}
 		break;
 	default:
@@ -62,7 +62,7 @@ static long sg90_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 static int sg90_open(struct inode *inode, struct file *file)
 {
-    printk("open in kernel\n");
+	printk("open in kernel\n");
 	
 	int ret;
 	// Reserve gpios
@@ -80,23 +80,23 @@ static int sg90_open(struct inode *inode, struct file *file)
 		ret = -EBUSY;
 		return(ret);
 	}
-    printk("sg90 gpio setup ok!\n");
+   	printk("sg90 gpio setup ok!\n");
 	
-    return 0;
+    	return 0;
 }
 
 static int sg90_release(struct inode *inode, struct file *file)
 {
 	gpio_free(PIN);
-    printk("sg90 gpio release\n");
-    return 0;
+	printk("sg90 gpio release\n");
+	return 0;
 }
 
 static struct file_operations sg90_dev_fops={
     owner			:	THIS_MODULE,
     open			:	sg90_open,
-    unlocked_ioctl  :   sg90_ioctl,
-	release			:	sg90_release,
+    unlocked_ioctl              :       sg90_ioctl,
+    release			:	sg90_release,
 };
 	
 static struct class *sg90_class;
@@ -114,13 +114,13 @@ static int __init sg90_dev_init(void)
 	printk("sg90 driver register success!\n");
 	
 	sg90_class = class_create(THIS_MODULE, "sg90");
-    if (IS_ERR(sg90_class))
+        if (IS_ERR(sg90_class))
 	{
 		printk("Can't make node %d\n", DEVICE_MAJOR);
-        return PTR_ERR(sg90_class);
+       		return PTR_ERR(sg90_class);
 	}
 
-    device_create(sg90_class, NULL, MKDEV(DEVICE_MAJOR, 0), NULL, DEVICE_NAME);    
+        device_create(sg90_class, NULL, MKDEV(DEVICE_MAJOR, 0), NULL, DEVICE_NAME);    
 	printk("sg90 driver make node success!\n");
 	
     return 0;
@@ -129,7 +129,7 @@ static int __init sg90_dev_init(void)
 static void __exit sg90_dev_exit(void)
 {
 	printk("exit in kernel\n");
-    unregister_chrdev(DEVICE_MAJOR, DEVICE_NAME);
+        unregister_chrdev(DEVICE_MAJOR, DEVICE_NAME);
 	printk("Remove sg90 device success!\n");
 }
 
