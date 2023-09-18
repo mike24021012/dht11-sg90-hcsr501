@@ -26,7 +26,7 @@ unsigned char check_flag,check_parity;
 void humidity_read_data(void)
 {
 	int i,j,num; 
-    unsigned char flag;
+    	unsigned char flag;
 	unsigned char data;
 	//host transmit start signal to dht11, and when dht11 receive the signal, it will transmit echo signal to host.
 	gpio_direction_output(PIN,0);
@@ -46,15 +46,15 @@ void humidity_read_data(void)
 			{
 				printk("error data!\n");
 				break;
-        	}
+        		}
 		}
 		i=0;
 		while(gpio_get_value(PIN))
 		{
-        	udelay(5);
-        	i++;
-        	if(i>20)
-        	{
+        		udelay(5);
+        		i++;
+        		if(i>20)
+        		{
 				printk("error data!\n");
 				break;
 			}
@@ -115,22 +115,22 @@ static ssize_t humidity_read(struct file *file, char* buffer, size_t size, loff_
     humidity_read_data();
 		
     if(check_flag == 1)
+    {
+	ret = copy_to_user(buffer,buf,sizeof(buf));
+	if(ret < 0)
 	{
-		ret = copy_to_user(buffer,buf,sizeof(buf));
-		if(ret < 0)
-		{
-			printk("copy to user err\n");
-			return -EAGAIN;
+		printk("copy to user err\n");
+		return -EAGAIN;
         }
         else
         {
-            return 0;
-	    }
+        	return 0;
+	}
     }
     else
     {
-        return -EAGAIN;
-	}
+    	return -EAGAIN;
+    }
 }
 
 
@@ -160,7 +160,7 @@ static int humidity_open(struct inode *inode, struct file *file)
 
 static int humidity_release(struct inode *inode, struct file *file)
 {
-	gpio_free(PIN);
+    gpio_free(PIN);
     printk("dht11 gpio release\n");
     return 0;
 }
@@ -188,21 +188,21 @@ static int __init humidity_dev_init(void)
 	printk("dht11 driver register success!\n");
 	
 	dht11_class = class_create(THIS_MODULE, "dht11");
-    if (IS_ERR(dht11_class))
+        if (IS_ERR(dht11_class))
 	{
 		printk(KERN_WARNING "Can't make node %d\n", DEVICE_MAJOR);
-        return PTR_ERR(dht11_class);
+        	return PTR_ERR(dht11_class);
 	}
-    device_create(dht11_class, NULL, MKDEV(DEVICE_MAJOR, 0), NULL, DEVICE_NAME);    
-	printk("dht11 driver make node success!\n");
+        device_create(dht11_class, NULL, MKDEV(DEVICE_MAJOR, 0), NULL, DEVICE_NAME);    
+        printk("dht11 driver make node success!\n");
 	
-    return 0;
+        return 0;
 }
 
 static void __exit humidity_dev_exit(void)
 {
 	printk("exit in kernel\n");
-    unregister_chrdev(DEVICE_MAJOR, DEVICE_NAME);
+        unregister_chrdev(DEVICE_MAJOR, DEVICE_NAME);
 	printk("Remove dht11 device success!\n");
 }
 
