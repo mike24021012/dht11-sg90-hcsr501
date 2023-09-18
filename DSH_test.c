@@ -25,8 +25,8 @@ pthread_t dht11_thread_t,sg90_thread_t,hcsr501_thread_t;
 //global variables used between threads communication
 //dht11
 int dht11_state=2;               //state_value   0:thread was used before, now close 
-								 //			 1:thread is continuing 
-								 // 			 2:thread never been used 
+				//			 1:thread is continuing 
+				// 			 2:thread never been used 
 //sg90
 int sg90_state=2,sg90_rotate_direction=0,sg90_speed;
 char sg90_speed_level='1';
@@ -67,11 +67,11 @@ void* dht11_run_thread(void* arg)
 	while(1)
 	{
 		ret = read(dht11_file,buf,sizeof(buf));
-    	if(ret < 0)
-    	{
-    		printf("read err!\n");
+    		if(ret < 0)
+    		{
+    			printf("read err!\n");
 		}
-        else
+        	else
 		{
 			humidiyz	=buf[0];
 			humidiyx	=buf[1];
@@ -79,7 +79,7 @@ void* dht11_run_thread(void* arg)
 			tempx		=buf[3];
 			printf("humidity = %d.%d%%\n", humidiyz, humidiyx);
 			printf("temperature = %d.%d\n", tempz, tempx);	
-        }
+        	}
 		sleep(2);
 		
 		if(tempz < 30)
@@ -101,9 +101,9 @@ void* hcsr501_run_thread(void* arg)
 	while(1)
 	{
 		respons = read(hcsr501_file,received_buf,sizeof(received_buf));
-    	if(respons < 0)
-    	{
-    		printf("read err!\n");
+    		if(respons < 0)
+    		{
+    			printf("read err!\n");
 		} 
 		
 		if(received_buf[0]=='1')
@@ -155,7 +155,7 @@ int main(void)
 	
 	while(1)
 	{
-	    printf("Input command, 1:start dht11 2:start sg90 3:start hcsr501 4:close dht11 5:close sg90 6:close hcsr501 7:leave program.\n");
+	        printf("Input command, 1:start dht11 2:start sg90 3:start hcsr501 4:close dht11 5:close sg90 6:close hcsr501 7:leave program.\n");
 		scanf("%c",&mycmd);
 		getchar();
 		switch(mycmd)
@@ -180,7 +180,7 @@ int main(void)
 				exit(1);
 			}
 			continue;
-    	case '3':
+    		case '3':
 			printf("start hcsr501_pthread.\n");
 			dht11_state=1;
 			res=pthread_create(&hcsr501_thread_t,NULL,hcsr501_run_thread,NULL);
@@ -197,7 +197,7 @@ int main(void)
 				res=pthread_join(dht11_thread_t,NULL);
 				if(res!=0)
 				{
-					("dht11_run_thread join failed\n");
+					printf("dht11_run_thread join failed\n");
 					exit(1);
 				}
 				printf("dht11_run_thread join finished.\n");
@@ -211,7 +211,7 @@ int main(void)
 				res=pthread_join(sg90_thread_t,NULL);
 				if(res!=0)
 				{
-					("sg90_run_thread join failed\n");
+					printf("sg90_run_thread join failed\n");
 					exit(1);
 				}
 				printf("sg90_run_thread join finished.\n");
@@ -225,7 +225,7 @@ int main(void)
 				res=pthread_join(hcsr501_thread_t,NULL);
 				if(res!=0)
 				{
-					("hcsr501_run_thread join failed\n");
+					printf("hcsr501_run_thread join failed\n");
 					exit(1);
 				}
 				printf("hcsr501_run_thread join finished.\n");
@@ -239,7 +239,7 @@ int main(void)
 				res=pthread_join(dht11_thread_t,NULL);
 				if(res!=0)
 				{
-					("dht11_run_thread join failed\n");
+					printf("dht11_run_thread join failed\n");
 					exit(1);
 				}
 				printf("dht11_run_thread join finished.\n");
@@ -250,7 +250,7 @@ int main(void)
 				res=pthread_join(sg90_thread_t,NULL);
 				if(res!=0)
 				{
-					("sg90_run_thread join failed\n");
+					printf("sg90_run_thread join failed\n");
 					exit(1);
 				}
 				printf("sg90_run_thread join finished.\n");
@@ -261,7 +261,7 @@ int main(void)
 				res=pthread_join(hcsr501_thread_t,NULL);
 				if(res!=0)
 				{
-					("hcsr501_run_thread join failed\n");
+					printf("hcsr501_run_thread join failed\n");
 					exit(1);
 				}
 				printf("hcsr501_run_thread join finished.\n");
