@@ -24,45 +24,45 @@ unsigned char buf[1]={'0'};
 
 static ssize_t infrared_read(struct file *file, char* buffer, size_t size, loff_t *off)
 {
-   int ret;
+    int ret;
        
-   if(gpio_get_value(PIN))
+    if(gpio_get_value(PIN))
+    {
+	buf[0]='1';
+	ret = copy_to_user(buffer,buf,sizeof(buf));
+	if(ret < 0)
 	{
-		buf[0]='1';
-		ret = copy_to_user(buffer,buf,sizeof(buf));
-		if(ret < 0)
-		{
-			printk("copy to user err\n");
-			return -EAGAIN;
+		printk("copy to user err\n");
+		return -EAGAIN;
         }
         else
         {
             return 0;
-		}
 	}
-	else
+    }
+    else
+    {
+	buf[0]='0';
+	ret = copy_to_user(buffer,buf,sizeof(buf));
+	if(ret < 0)
 	{
-		buf[0]='0';
-		ret = copy_to_user(buffer,buf,sizeof(buf));
-		if(ret < 0)
-		{
-			printk("copy to user err\n");
-			return -EAGAIN;
+		printk("copy to user err\n");
+		return -EAGAIN;
         }
         else
         {
             return 0;
-		}
 	}
+    }
 	
-	return 0;
+    return 0;
 }
 
 static int infrared_open(struct inode *inode, struct file *file)
 {
-    printk("open in kernel\n");
+	printk("open in kernel\n");
 	
-	int ret;
+        int ret;
 	// Reserve gpios
 	if( gpio_request( PIN, DEVICE_NAME ) < 0 )	// request gpx0(6)
 	{
@@ -86,22 +86,22 @@ static int infrared_open(struct inode *inode, struct file *file)
 static int infrared_release(struct inode *inode, struct file *file)
 {
 	gpio_free(PIN);
-    printk("hcsr501 gpio release\n");
-    return 0;
+	printk("hcsr501 gpio release\n");
+	return 0;
 }
 
 static struct file_operations infrared_dev_fops={
     owner		:	THIS_MODULE,
     open		:	infrared_open,
-	read		:	infrared_read,
-	release		:	infrared_release,
+    read		:	infrared_read,
+    release		:	infrared_release,
 };
 	
 static struct class *hcsr501_class;
 
 static int __init infrared_dev_init(void) 
 {
-	int	ret;
+	int ret;
 
 	ret = register_chrdev(DEVICE_MAJOR, DEVICE_NAME, &infrared_dev_fops);
 	if (ret < 0) {
@@ -112,23 +112,23 @@ static int __init infrared_dev_init(void)
 	printk("hcsr501 driver register success!\n");
 	
 	hcsr501_class = class_create(THIS_MODULE, "hcsr501");
-    if (IS_ERR(hcsr501_class))
+        if (IS_ERR(hcsr501_class))
 	{
 		printk(KERN_WARNING "Can't make node %d\n", DEVICE_MAJOR);
                 return PTR_ERR(hcsr501_class);
 	}
 
-    device_create(hcsr501_class, NULL, MKDEV(DEVICE_MAJOR, 0), NULL, DEVICE_NAME);
+        device_create(hcsr501_class, NULL, MKDEV(DEVICE_MAJOR, 0), NULL, DEVICE_NAME);
         
 	printk("hcsr501 driver make node success!\n");
 	
-    return 0;
+	return 0;
 }
 
 static void __exit infrared_dev_exit(void)
 {
 	printk("exit in kernel\n");
-    unregister_chrdev(DEVICE_MAJOR, DEVICE_NAME);
+        unregister_chrdev(DEVICE_MAJOR, DEVICE_NAME);
 	printk("Remove hcsr501 device success!\n");
 }
 
